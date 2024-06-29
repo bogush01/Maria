@@ -1,0 +1,87 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Форма бронирования</title>
+    <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+    <main>
+        <form id="bookingForm" novalidate>
+            <fieldset>
+                <legend>Форма бронирования</legend>
+
+                <label for="lastName">Фамилия</label>
+                <input type="text" id="lastName" name="lastName" required pattern="[А-Яа-яЁё\\s]+" title="Только кириллица и пробелы">
+
+                <label for="firstName">Имя</label>
+                <input type="text" id="firstName" name="firstName" required pattern="[А-Яа-яЁё\\s]+" title="Только кириллица и пробелы">
+
+                <label for="middleName">Отчество</label>
+                <input type="text" id="middleName" name="middleName" required pattern="[А-Яа-яЁё\\s]+" title="Только кириллица и пробелы">
+
+                <label for="phone">Телефон</label>
+                <input type="tel" id="phone" name="phone" required pattern="/^(?=.*[0-9]).{11,}$/" title="Формат: +7XXXXXXXXXX или 8XXXXXXXXXX">
+
+                <label for="bookingDate">Дата и время начала брони</label>
+                <input type="datetime-local" id="bookingDate" name="bookingDate" required>
+
+                <button type="submit">Забронировать</button>
+            </fieldset>
+        </form>
+        <div id="message"></div>
+    </main>
+
+    <footer>
+        <p>© 2023 Форма бронирования. Все права защищены.</p>
+    </footer>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+    const form = document.getElementById('bookingForm');
+    form.addEventListener('submit', function(event) {
+        event.preventDefault();
+
+        const lastName = form.lastName.value.trim();
+        const firstName = form.firstName.value.trim();
+        const middleName = form.middleName.value.trim();
+        const phone = form.phone.value.trim();
+        const bookingDate = new Date(form.bookingDate.value);
+
+        let errorMessage = '';
+
+        if (!lastName.match(/[А-Яа-яЁё\\s]+/)) {
+            errorMessage += 'Фамилия должна содержать только кириллицу и пробелы.<br>';
+        }
+
+        if (!firstName.match(/[А-Яа-яЁё\\s]+/)) {
+            errorMessage += 'Имя должно содержать только кириллицу и пробелы.<br>';
+        }
+
+        if (!middleName.match(/[А-Яа-яЁё\\s]+/)) {
+            errorMessage += 'Отчество должно содержать только кириллицу и пробелы.<br>';
+        }
+
+        if (!phone.match(/^(?=.*[0-9]).{11,}$/)) {
+            errorMessage += 'Телефон должен быть в формате +7XXXXXXXXXX или 8XXXXXXXXXX.<br>';
+        }
+
+        const now = new Date();
+        if (isNaN(bookingDate.getTime()) || bookingDate < now) {
+            errorMessage += 'Дата и время начала брони должны быть не ранее текущего времени.<br>';
+        }
+
+        const message = document.getElementById('message');
+        if (errorMessage) {
+            message.classList.add('error');
+            message.innerHTML = errorMessage;
+        } else {
+            message.classList.remove('error');
+            message.innerHTML = `Успешная отправка!<br>Фамилия: ${lastName}<br>Имя: ${firstName}<br>Отчество: ${middleName}<br>Телефон: ${phone}<br>Дата и время начала брони: ${bookingDate.toLocaleString()}`;
+        }
+    });
+});
+    </script>
+</body>
+</html>
